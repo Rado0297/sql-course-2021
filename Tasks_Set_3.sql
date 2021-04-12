@@ -1,0 +1,85 @@
+USE movies
+
+/*
+SELECT NAME
+FROM MOVIESTAR
+WHERE GENDER = 'M' AND NAME IN (SELECT NAME FROM MOVIEEXEC WHERE NETWORTH > 10000000)
+*/
+
+/*
+SELECT NAME
+FROM MOVIESTAR
+WHERE NAME NOT IN (SELECT NAME FROM MOVIEEXEC)
+*/
+
+USE pc
+
+/*
+SELECT DISTINCT p.maker FROM product p
+WHERE p.model IN (SELECT pc.model FROM pc WHERE pc.speed >= 500)
+*/
+
+/*
+SELECT * FROM laptop l
+WHERE l.speed < ANY (SELECT pc.speed FROM pc)
+*/
+/*
+SELECT DISTINCT model FROM (
+	SELECT model, price FROM pc
+	UNION
+	SELECT model, price FROM laptop
+	UNION
+	SELECT model, price FROM printer
+) t
+WHERE price >= ALL (
+	SELECT price FROM pc
+	UNION
+	SELECT price FROM laptop
+	UNION
+	SELECT price FROM printer
+)
+*/
+
+/*
+SELECT DISTINCT maker FROM product
+WHERE model IN (
+	SELECT model FROM printer
+	WHERE color = 'y'
+		AND price <= ALL (SELECT price FROM printer WHERE color = 'y')
+)
+*/
+
+/*
+SELECT DISTINCT maker FROM product
+WHERE model IN (
+	SELECT model FROM pc p1
+	WHERE ram <= ALL (SELECT ram FROM pc)
+		AND speed >= ALL (SELECT speed FROM pc p2 WHERE p1.ram = p2.ram)
+)
+*/
+
+USE ships
+
+/*
+SELECT DISTINCT c.COUNTRY FROM CLASSES c
+WHERE c.NUMGUNS >= ALL (SELECT NUMGUNS FROM CLASSES)
+*/
+
+/*
+SELECT NAME FROM SHIPS
+WHERE CLASS IN (SELECT CLASS FROM CLASSES WHERE BORE = 16)
+*/
+
+/*
+SELECT o.BATTLE FROM OUTCOMES o
+WHERE o.SHIP IN (SELECT s.NAME FROM SHIPS s WHERE s.CLASS = 'Kongo')
+*/
+
+/*
+SELECT s.NAME FROM SHIPS s
+WHERE s.CLASS IN (
+	SELECT CLASS FROM CLASSES c1 WHERE c1.NUMGUNS >= ALL (
+		SELECT NUMGUNS FROM CLASSES c2 WHERE c1.BORE = c2.BORE
+	)
+)
+*/
