@@ -1,0 +1,118 @@
+USE movies
+
+-- 1.1.
+SELECT *
+FROM MOVIEEXEC m
+WHERE m.NETWORTH > 10000000 AND m.NAME  IN (SELECT m2.NAME FROM MOVIESTAR m2 WHERE m2.GENDER = 'F')
+
+-- 1.2.
+SELECT m.NAME
+FROM MOVIESTAR m
+WHERE m.NAME NOT IN (SELECT m2.NAME FROM MOVIEEXEC m2)
+
+-- 1.3.
+SELECT *
+FROM MOVIE m
+WHERE m.LENGTH > (SELECT m2.LENGTH FROM MOVIE m2 WHERE m2.TITLE = 'Gone With the Wind' AND YEAR = 1938)
+
+-- 1.4.
+SELECT m.NAME, m2.TITLE
+FROM MOVIEEXEC m
+	JOIN MOVIE m2 ON m.CERT# = m2.PRODUCERC#
+WHERE m.NETWORTH IN (SELECT m.NETWORTH
+						FROM MOVIEEXEC m
+						WHERE m.NAME NOT LIKE 'Merv Griffin' AND m.NETWORTH > 112000000)
+						
+-- 2.1.
+USE pc
+
+SELECT *
+FROM product p3
+	JOIN pc p ON p3.model = p.model 
+WHERE p.speed IN (SELECT p2.speed FROM pc p2 WHERE p2.speed > 500)
+
+-- 2.2.
+SELECT *
+FROM printer p
+WHERE p.price in (SELECT MAX(p.price) FROM printer p)
+
+-- 2.3.
+SELECT *
+FROM laptop l
+WHERE l.speed < (SELECT MIN(p.speed) FROM pc p)
+
+-- 2.4.
+SELECT DISTINCT model
+FROM (SELECT model, price FROM pc
+      UNION
+      SELECT model, price FROM laptop
+      UNION
+      SELECT model, price FROM printer) t
+WHERE price >= ALL (SELECT price FROM pc
+                    UNION
+                    SELECT price FROM laptop
+                    UNION
+                    SELECT price FROM printer)
+
+-- 2.5.
+SELECT p.maker
+FROM product p
+	JOIN printer p2 ON p.model = p2.model
+WHERE p2.price IN (SELECT MIN(p3.price) FROM printer p3)
+
+-- 2.6.
+SELECT DISTINCT maker
+FROM product
+WHERE model IN 
+	(SELECT model
+     FROM pc p1
+     WHERE ram <= ALL (SELECT ram FROM pc)
+           AND speed >= ALL (SELECT speed FROM pc p2 WHERE p1.ram = p2.ram))
+
+-- 3.1.
+USE ships
+
+SELECT DISTINCT c.COUNTRY
+FROM CLASSES c
+WHERE c.NUMGUNS >= ALL (SELECT c2.NUMGUNS FROM CLASSES c2)
+
+-- 3.2.
+SELECT DISTINCT s.CLASS
+FROM SHIPS s
+WHERE s.NAME IN (SELECT o.SHIP FROM OUTCOMES o WHERE o.RESULT = 'sunk')
+
+-- 3.3.
+SELECT s.NAME
+FROM SHIPS s
+WHERE s.CLASS IN (SELECT c.CLASS FROM CLASSES c WHERE c.BORE = 16)
+
+-- 3.4.
+SELECT o.BATTLE
+FROM OUTCOMES o
+	JOIN SHIPS s ON o.SHIP = s.NAME
+WHERE s.CLASS = 'Kongo'
+
+-- 3.5.
+SELECT NAME
+FROM SHIPS s
+	JOIN CLASSES c1 ON s.CLASS = c1.CLASS
+WHERE c1.NUMGUNS >= ALL (SELECT NUMGUNS FROM CLASSES c2 WHERE c1.BORE = c2.BORE)
+
+SELECT NAME
+FROM SHIPS  
+WHERE CLASS IN (SELECT CLASS
+				FROM CLASSES c1
+				WHERE c1.NUMGUNS >= ALL (SELECT NUMGUNS FROM CLASSES c2 WHERE c1.BORE = c2.BORE))
+
+
+
+
+
+
+
+
+
+
+
+
+-- EOF
