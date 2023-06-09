@@ -23,7 +23,7 @@ WHERE p.maker = 'A'
 GROUP BY p.maker
 
 -- 1.5.
-SELECT p.maker, AVG(p2.price)
+          SELECT p.maker, AVG(p2.price)
 FROM pc p2
 	JOIN product p ON p2.model = p.model
 WHERE p.maker = 'B'
@@ -114,5 +114,25 @@ SELECT c.COUNTRY, AVG(c.DISPLACEMENT)
 FROM SHIPS s
 	JOIN CLASSES c ON s.CLASS = c.CLASS
 GROUP BY c.COUNTRY
+
+-- Bonus
+use movies
+
+SELECT *
+FROM MOVIEEXEC me
+	JOIN MOVIE m ON me.CERT# = m.PRODUCERC#
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- EOF
